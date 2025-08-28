@@ -1,0 +1,39 @@
+district,soil_type,ph,organic_carbon_percent,nitrogen_kg_per_hectare,phosphorus_kg_per_hectare,potassium_kg_per_hectare
+Patna,Tal,6.1,1.12,231.8,39.2,115.5
+Gaya,Old Alluvial,8.1,0.57,197.6,20.8,148.7
+Bhagalpur,Alluvial,6.6,0.69,164.4,16.2,175.6
+Muzaffarpur,Terai,7.0,0.78,166.8,30.9,162.3
+Darbhanga,Old Alluvial,8.2,0.45,197.4,44.4,119.7
+Purnia,Terai,8.2,1.11,172.2,31.8,173.2
+Araria,Terai,8.5,0.61,266.5,41.2,170.7
+Kishanganj,Diara,6.8,0.88,157.2,25.8,177.8
+West Champaran,Alluvial,7.4,0.76,218.2,33.9,147.0
+East Champaran,Terai,7.4,0.47,218.9,30.4,176.5
+Sheohar,Tal,7.7,0.33,182.4,43.9,148.7
+Sitamarhi,Tal,6.6,0.74,251.7,25.2,147.8
+Madhubani,Alluvial,8.4,0.48,222.7,33.3,120.9
+Supaul,Diara,7.9,0.4,263.8,30.3,134.8
+Saharsa,Old Alluvial,6.3,1.07,227.6,17.8,161.7
+Madhepura,Diara,7.8,1.15,241.3,39.7,154.5
+Khagaria,Alluvial,8.0,0.66,259.7,32.2,103.0
+Begusarai,Diara,7.4,0.81,257.6,16.2,178.6
+Samastipur,Terai,6.3,1.13,216.2,33.2,150.1
+Vaishali,Tal,6.5,0.94,229.2,35.3,188.9
+Saran,Old Alluvial,7.9,0.9,269.9,35.1,101.6
+Siwan,Alluvial,7.8,0.9,257.4,27.9,156.4
+Gopalganj,Old Alluvial,6.7,1.1,199.7,27.5,88.9
+Rohtas,Old Alluvial,7.1,0.7,146.7,42.2,157.7
+Buxar,Terai,8.0,0.61,155.5,32.7,82.6
+Kaimur,Alluvial,7.4,1.01,159.7,42.5,142.2
+Bhojpur,Diara,7.0,1.1,219.4,39.4,173.1
+Arwal,Terai,8.3,0.69,269.8,41.0,159.2
+Jehanabad,Old Alluvial,6.9,0.83,167.6,21.2,84.3
+Aurangabad,Old Alluvial,8.3,0.3,186.7,25.0,195.3
+Nalanda,Tal,7.5,0.8,264.5,15.2,147.5
+Sheikhpura,Alluvial,8.2,0.65,181.4,29.2,196.6
+Lakhisarai,Diara,8.2,0.33,263.5,21.4,117.8
+Jamui,Terai,8.3,0.77,134.4,26.9,125.7
+Munger,Old Alluvial,6.9,0.56,267.1,39.2,99.2
+Banka,Diara,7.9,0.74,189.2,42.8,116.7
+Nawada,Tal,6.9,0.54,181.2,19.2,113.6
+Katihar,Terai,6.9,0.49,137.4,25.4,157.2
