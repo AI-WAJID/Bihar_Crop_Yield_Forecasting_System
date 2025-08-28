@@ -1,0 +1,110 @@
+name: CI/CD Pipeline for Bihar Crop Forecasting
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  PYTHON_VERSION: '3.9'
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov flake8 black isort
+
+    - name: Run code formatting checks
+      run: |
+        black --check src/
+        isort --check-only src/
+        flake8 src/ --max-line-length=88 --ignore=E501,W503
+
+    - name: Run unit tests
+      run: |
+        pytest tests/ -v --cov=src --cov-report=xml
+
+  data-validation:
+    name: Data Validation
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run data ingestion test
+      run: |
+        python -m src.data.ingestion
+
+    - name: Run data preprocessing test
+      run: |
+        python -m src.data.preprocessing
+
+  model-training:
+    name: Model Training Test
+    runs-on: ubuntu-latest
+    needs: [test, data-validation]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run model training
+      run: |
+        python -m src.models.train_model
+
+  build-docker:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    needs: [test, data-validation]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Build Docker image
+      run: |
+        docker build -t bihar-crop-forecasting:latest .
+
+    - name: Test Docker image
+      run: |
+        docker run --rm -d -p 8000:8000 --name test-api bihar-crop-forecasting:latest
+        sleep 30
+        curl -f http://localhost:8000/health || exit 1
+        docker stop test-api

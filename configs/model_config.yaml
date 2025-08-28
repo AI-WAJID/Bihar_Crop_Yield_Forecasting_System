@@ -1,0 +1,98 @@
+# Model configurations for crop yield prediction
+
+# XGBoost Configuration
+xgboost:
+  n_estimators: 1000
+  max_depth: 6
+  learning_rate: 0.01
+  subsample: 0.8
+  colsample_bytree: 0.8
+  objective: "reg:squarederror"
+  random_state: 42
+  n_jobs: -1
+
+# LightGBM Configuration  
+lightgbm:
+  n_estimators: 1000
+  max_depth: 6
+  learning_rate: 0.01
+  subsample: 0.8
+  colsample_bytree: 0.8
+  objective: "regression"
+  metric: "rmse"
+  random_state: 42
+  n_jobs: -1
+  verbose: -1
+
+# Random Forest Configuration
+random_forest:
+  n_estimators: 500
+  max_depth: 10
+  min_samples_split: 5
+  min_samples_leaf: 2
+  random_state: 42
+  n_jobs: -1
+
+# Ensemble Configuration
+ensemble:
+  method: "weighted_average"
+  weights:
+    xgboost: 0.4
+    lightgbm: 0.4
+    random_forest: 0.2
+
+  meta_learner:
+    enabled: false
+    algorithm: "linear_regression"
+
+# Hyperparameter tuning
+hyperparameter_tuning:
+  enabled: true
+  method: "optuna"
+  n_trials: 100
+
+  search_spaces:
+    xgboost:
+      n_estimators: [500, 2000]
+      max_depth: [3, 10]
+      learning_rate: [0.001, 0.1]
+      subsample: [0.6, 1.0]
+      colsample_bytree: [0.6, 1.0]
+
+    lightgbm:
+      n_estimators: [500, 2000]
+      max_depth: [3, 10]
+      learning_rate: [0.001, 0.1]
+      subsample: [0.6, 1.0]
+      num_leaves: [10, 300]
+
+# Cross-validation
+cross_validation:
+  enabled: true
+  cv_folds: 5
+  shuffle: true
+  random_state: 42
+
+# Evaluation metrics
+evaluation:
+  primary_metric: "rmse"
+  secondary_metrics:
+    - "mae"
+    - "r2_score"
+    - "mape"
+
+  threshold_rmse: 300
+
+# Model persistence
+model_persistence:
+  save_best_model: true
+  model_registry: "mlflow"
+  versioning: true
+
+# Feature importance
+feature_importance:
+  calculate: true
+  methods:
+    - "gain"
+    - "split"
+    - "permutation"

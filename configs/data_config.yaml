@@ -1,0 +1,82 @@
+# Configuration for data sources and parameters
+data_sources:
+  agricultural:
+    file: "data/raw/bihar_agricultural_data.csv"
+    target_column: "yield_kg_per_hectare"
+  
+  weather:
+    file: "data/raw/bihar_weather_data.csv"
+    key_variables:
+      - temp_max_c
+      - temp_min_c
+      - rainfall_mm
+      - humidity_percent
+      - solar_radiation
+  
+  satellite:
+    file: "data/raw/bihar_satellite_data.csv"
+    variables:
+      - ndvi
+      - lai
+      - evi
+  
+  soil:
+    file: "data/raw/bihar_soil_data.csv"
+    variables:
+      - ph
+      - organic_carbon_percent
+      - nitrogen_kg_per_hectare
+      - phosphorus_kg_per_hectare
+      - potassium_kg_per_hectare
+
+# Feature engineering parameters
+feature_engineering:
+  lag_features:
+    enabled: true
+    lags: [1, 2, 3]
+    
+  weather_aggregations:
+    growing_season_months:
+      kharif: [6, 7, 8, 9, 10]
+      rabi: [11, 12, 1, 2, 3]
+    
+  seasonal_features:
+    enabled: true
+    
+  polynomial_features:
+    enabled: false
+    degree: 2
+
+# Data validation rules
+validation:
+  yield_range:
+    rice: [1000, 4000]
+    wheat: [1500, 4500]
+    maize: [2000, 5000]
+    sugarcane: [30000, 65000]
+    jute: [1000, 3000]
+  
+  temperature_range: [-5, 50]
+  rainfall_range: [0, 500]
+  ndvi_range: [0, 1]
+
+# Data preprocessing
+preprocessing:
+  handle_missing_values: true
+  outlier_detection:
+    enabled: true
+    method: "iqr"
+    factor: 1.5
+  
+  scaling:
+    method: "standard"  # standard, minmax, robust
+    
+  encoding:
+    categorical_method: "onehot"
+    
+# Train/test split
+data_split:
+  test_size: 0.2
+  validation_size: 0.2
+  random_state: 42
+  stratify_by: "crop"

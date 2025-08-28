@@ -1,0 +1,1 @@
+"""Bihar Crop Forecasting Project"""
