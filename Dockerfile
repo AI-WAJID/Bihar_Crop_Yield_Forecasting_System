@@ -14,14 +14,14 @@ RUN apt-get update && apt-get install -y \
     python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Upgrade pip, setuptools, and wheel
+# Upgrade pip
 RUN python -m pip install --upgrade pip setuptools wheel
 
-# Copy requirements and install Python dependencies
+# Copy and install requirements
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy source code and data
+# Copy project files
 COPY src/ ./src/
 COPY models/ ./models/
 COPY configs/ ./configs/
@@ -32,7 +32,7 @@ COPY dashboard/ ./dashboard/
 ENV PYTHONPATH=/app
 ENV MLFLOW_TRACKING_URI=sqlite:///mlflow.db
 
-# Create directories for MLflow
+# Create directories
 RUN mkdir -p /app/mlruns
 
 # Expose port
@@ -42,5 +42,5 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=30s --start-period=15s --retries=3 \
     CMD curl -f http://localhost:${PORT:-8000}/_stcore/health || exit 1
 
-# Run Streamlit directly
+# Run Streamlit ONLY
 CMD streamlit run dashboard/dashboard_app.py --server.port=${PORT:-8000} --server.address=0.0.0.0 --server.headless=true --server.enableCORS=false --server.enableXsrfProtection=false
