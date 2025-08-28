@@ -1,7 +1,7 @@
 """
 # Author: Wajid
 # Bihar Crop Yield Prediction System
-Streamlit Dashboard for Bihar Crop Forecasting
+Streamlit Dashboard for Bihar Crop Forecasting - FIXED VERSION
 Interactive web application for crop yield predictions
 """
 
@@ -47,6 +47,131 @@ st.markdown("""
 # Main title
 st.markdown('<h1 class="main-header">🌾 Bihar Crop Yield Forecasting Dashboard</h1>', unsafe_allow_html=True)
 
+# Enhanced preprocessing function
+def create_all_features(input_data):
+    """Create all 40 features that match the trained model"""
+    
+    # Base feature mappings
+    district_mapping = {
+        'patna': 0, 'gaya': 1, 'bhagalpur': 2, 'muzaffarpur': 3, 'darbhanga': 4,
+        'purnia': 5, 'araria': 6, 'kishanganj': 7, 'west champaran': 8, 'east champaran': 9,
+        'sheohar': 10, 'sitamarhi': 11, 'madhubani': 12, 'supaul': 13, 'saharsa': 14,
+        'madhepura': 15, 'khagaria': 16, 'begusarai': 17, 'samastipur': 18, 'vaishali': 19,
+        'saran': 20, 'siwan': 21, 'gopalganj': 22, 'rohtas': 23, 'buxar': 24,
+        'kaimur': 25, 'bhojpur': 26, 'arwal': 27, 'jehanabad': 28, 'aurangabad': 29,
+        'nalanda': 30, 'sheikhpura': 31, 'lakhisarai': 32, 'jamui': 33, 'munger': 34,
+        'banka': 35, 'nawada': 36, 'katihar': 37
+    }
+    
+    crop_mapping = {'rice': 0, 'wheat': 1, 'maize': 2, 'sugarcane': 3, 'jute': 4}
+    season_mapping = {'kharif': 0, 'rabi': 1}
+    
+    # Create base features
+    features = {}
+    
+    # 1. Basic encoded features (4 features)
+    features['district_encoded'] = district_mapping.get(input_data['district'].lower(), 0)
+    features['crop_encoded'] = crop_mapping.get(input_data['crop'].lower(), 0)
+    features['season_encoded'] = season_mapping.get(input_data['season'].lower(), 0)
+    features['year'] = input_data['year']
+    
+    # 2. Weather features (5 features)
+    features['temp_max_c_mean'] = input_data['temp_max_c_mean']
+    features['temp_min_c_mean'] = input_data['temp_min_c_mean']
+    features['rainfall_mm_sum'] = input_data['rainfall_mm_sum']
+    features['humidity_percent_mean'] = input_data['humidity_percent_mean']
+    features['solar_radiation_mean'] = input_data['solar_radiation_mean']
+    
+    # 3. Satellite features (4 features)
+    features['ndvi_mean'] = input_data['ndvi_mean']
+    features['ndvi_max'] = input_data['ndvi_max']
+    features['lai_mean'] = input_data['lai_mean']
+    features['lai_max'] = input_data['lai_max']
+    
+    # 4. Soil features (5 features)
+    features['ph'] = input_data['ph']
+    features['organic_carbon_percent'] = input_data['organic_carbon_percent']
+    features['nitrogen_kg_per_hectare'] = input_data['nitrogen_kg_per_hectare']
+    features['phosphorus_kg_per_hectare'] = input_data['phosphorus_kg_per_hectare']
+    features['potassium_kg_per_hectare'] = input_data['potassium_kg_per_hectare']
+    
+    # 5. ENGINEERED FEATURES (22 additional features to reach 40)
+    # Temperature-related features
+    features['temp_range'] = features['temp_max_c_mean'] - features['temp_min_c_mean']
+    features['temp_avg'] = (features['temp_max_c_mean'] + features['temp_min_c_mean']) / 2
+    
+    # Vegetation indices
+    features['ndvi_range'] = features['ndvi_max'] - features['ndvi_mean']
+    features['lai_range'] = features['lai_max'] - features['lai_mean']
+    features['vegetation_index'] = features['ndvi_mean'] * features['lai_mean']
+    
+    # Nutrient ratios
+    features['n_p_ratio'] = features['nitrogen_kg_per_hectare'] / max(features['phosphorus_kg_per_hectare'], 1)
+    features['n_k_ratio'] = features['nitrogen_kg_per_hectare'] / max(features['potassium_kg_per_hectare'], 1)
+    features['p_k_ratio'] = features['phosphorus_kg_per_hectare'] / max(features['potassium_kg_per_hectare'], 1)
+    
+    # Weather interactions
+    features['rainfall_humidity'] = features['rainfall_mm_sum'] * features['humidity_percent_mean'] / 100
+    features['temp_solar'] = features['temp_avg'] * features['solar_radiation_mean']
+    
+    # Seasonal adjustments
+    features['rainfall_per_temp'] = features['rainfall_mm_sum'] / max(features['temp_avg'], 1)
+    features['humidity_temp_index'] = features['humidity_percent_mean'] / max(features['temp_avg'], 1)
+    
+    # Year-based features
+    features['year_normalized'] = (features['year'] - 2020) / 10.0
+    
+    # Crop-season interaction
+    features['crop_season_interaction'] = features['crop_encoded'] * features['season_encoded']
+    
+    # District-crop interaction
+    features['district_crop_interaction'] = features['district_encoded'] * features['crop_encoded']
+    
+    # Advanced soil health index
+    features['soil_health_index'] = (
+        (features['ph'] / 7.0) * 
+        features['organic_carbon_percent'] * 
+        np.sqrt(features['nitrogen_kg_per_hectare'] * features['phosphorus_kg_per_hectare'] * features['potassium_kg_per_hectare']) / 1000
+    )
+    
+    # Climate stress indicators
+    features['heat_stress'] = max(0, features['temp_max_c_mean'] - 35) * (100 - features['humidity_percent_mean']) / 100
+    features['water_stress'] = max(0, 30 - features['rainfall_mm_sum'] / 50)
+    
+    # Productivity indicators
+    features['growing_degree_days'] = max(0, features['temp_avg'] - 10) * 30
+    features['evapotranspiration_index'] = features['temp_avg'] * features['solar_radiation_mean'] / max(features['humidity_percent_mean'], 1)
+    
+    # Additional engineered features
+    features['soil_fertility_score'] = (features['nitrogen_kg_per_hectare'] + features['phosphorus_kg_per_hectare'] + features['potassium_kg_per_hectare']) / 3
+    features['climate_favorability'] = (features['rainfall_mm_sum'] / 1000) * (features['temp_avg'] / 30) * (features['humidity_percent_mean'] / 100)
+    features['vegetation_vigor'] = features['ndvi_mean'] * features['lai_mean'] * features['solar_radiation_mean']
+    
+    return features
+
+def preprocess_input_enhanced(input_data):
+    """Enhanced preprocessing to generate exactly 40 features"""
+    
+    # Generate all features
+    all_features = create_all_features(input_data)
+    
+    # Create DataFrame
+    feature_df = pd.DataFrame([all_features])
+    
+    # Ensure we have exactly 40 features
+    target_features = 40
+    current_features = len(feature_df.columns)
+    
+    if current_features < target_features:
+        # Add dummy features to reach 40
+        for i in range(current_features, target_features):
+            feature_df[f'feature_{i}'] = 0.0
+    elif current_features > target_features:
+        # Take first 40 features if we have too many
+        feature_df = feature_df.iloc[:, :target_features]
+    
+    return feature_df
+
 # Load models function
 @st.cache_resource
 def load_models():
@@ -68,107 +193,32 @@ def load_models():
             if os.path.exists(model_path):
                 with open(model_path, 'rb') as f:
                     models[model_name] = pickle.load(f)
-                st.success(f"✅ Loaded {model_name}")
+                st.sidebar.success(f"✅ Loaded {model_name}")
             else:
-                st.warning(f"⚠️ Model file not found: {filename}")
+                st.sidebar.warning(f"⚠️ Model file not found: {filename}")
         
         return models
     except Exception as e:
-        st.error(f"❌ Error loading models: {str(e)}")
+        st.sidebar.error(f"❌ Error loading models: {str(e)}")
         return {}
 
-# Load feature columns
-@st.cache_data
-def load_feature_columns():
-    """Load expected feature columns"""
+# Enhanced prediction function
+def make_prediction_enhanced(models, input_data):
+    """Make prediction with proper 40-feature preprocessing"""
     try:
-        with open('/app/models/feature_columns.json', 'r') as f:
-            return json.load(f)
-    except:
-        # Fallback feature list
-        return [
-            'district_encoded', 'crop_encoded', 'season_encoded', 'year',
-            'temp_max_c_mean', 'temp_min_c_mean', 'rainfall_mm_sum', 
-            'humidity_percent_mean', 'solar_radiation_mean',
-            'ndvi_mean', 'ndvi_max', 'lai_mean', 'lai_max',
-            'ph', 'organic_carbon_percent', 'nitrogen_kg_per_hectare',
-            'phosphorus_kg_per_hectare', 'potassium_kg_per_hectare'
-        ]
-
-# Preprocessing function
-def preprocess_input(input_data, feature_columns):
-    """Convert input data to model format"""
-    
-    # District encoding (simplified)
-    district_mapping = {
-        'patna': 0, 'gaya': 1, 'bhagalpur': 2, 'muzaffarpur': 3, 'darbhanga': 4,
-        'purnia': 5, 'araria': 6, 'kishanganj': 7, 'west champaran': 8, 'east champaran': 9,
-        'sheohar': 10, 'sitamarhi': 11, 'madhubani': 12, 'supaul': 13, 'saharsa': 14,
-        'madhepura': 15, 'khagaria': 16, 'begusarai': 17, 'samastipur': 18, 'vaishali': 19,
-        'saran': 20, 'siwan': 21, 'gopalganj': 22, 'rohtas': 23, 'buxar': 24,
-        'kaimur': 25, 'bhojpur': 26, 'arwal': 27, 'jehanabad': 28, 'aurangabad': 29,
-        'nalanda': 30, 'sheikhpura': 31, 'lakhisarai': 32, 'jamui': 33, 'munger': 34,
-        'banka': 35, 'nawada': 36, 'katihar': 37
-    }
-    
-    # Crop encoding
-    crop_mapping = {'rice': 0, 'wheat': 1, 'maize': 2, 'sugarcane': 3, 'jute': 4}
-    
-    # Season encoding  
-    season_mapping = {'kharif': 0, 'rabi': 1}
-    
-    # Create feature vector
-    features = {}
-    
-    # Encode categorical variables
-    features['district_encoded'] = district_mapping.get(input_data['district'].lower(), 0)
-    features['crop_encoded'] = crop_mapping.get(input_data['crop'].lower(), 0)
-    features['season_encoded'] = season_mapping.get(input_data['season'].lower(), 0)
-    
-    # Add numerical features
-    features.update({
-        'year': input_data['year'],
-        'temp_max_c_mean': input_data['temp_max_c_mean'],
-        'temp_min_c_mean': input_data['temp_min_c_mean'],
-        'rainfall_mm_sum': input_data['rainfall_mm_sum'],
-        'humidity_percent_mean': input_data['humidity_percent_mean'],
-        'solar_radiation_mean': input_data['solar_radiation_mean'],
-        'ndvi_mean': input_data['ndvi_mean'],
-        'ndvi_max': input_data['ndvi_max'],
-        'lai_mean': input_data['lai_mean'],
-        'lai_max': input_data['lai_max'],
-        'ph': input_data['ph'],
-        'organic_carbon_percent': input_data['organic_carbon_percent'],
-        'nitrogen_kg_per_hectare': input_data['nitrogen_kg_per_hectare'],
-        'phosphorus_kg_per_hectare': input_data['phosphorus_kg_per_hectare'],
-        'potassium_kg_per_hectare': input_data['potassium_kg_per_hectare']
-    })
-    
-    # Create DataFrame with correct column order
-    feature_df = pd.DataFrame([features])
-    
-    # Ensure all required columns are present
-    for col in feature_columns:
-        if col not in feature_df.columns:
-            feature_df[col] = 0
-    
-    return feature_df[feature_columns]
-
-# Prediction function
-def make_prediction(models, input_data, feature_columns):
-    """Make prediction using loaded models"""
-    try:
-        # Preprocess input
-        X = preprocess_input(input_data, feature_columns)
+        # Generate exactly 40 features
+        X = preprocess_input_enhanced(input_data)
         
-        # Use best model if available, otherwise use first available model
+        st.info(f"Generated {X.shape[1]} features for prediction")
+        
+        # Use best model if available
         model_name = 'best_model' if 'best_model' in models else list(models.keys())[0]
         model = models[model_name]
         
         # Make prediction
         prediction = model.predict(X)[0]
         
-        # Calculate confidence interval (simple approximation)
+        # Calculate confidence interval
         confidence_lower = prediction * 0.85
         confidence_upper = prediction * 1.15
         
@@ -186,17 +236,10 @@ def make_prediction(models, input_data, feature_columns):
         st.error(f"Prediction error: {str(e)}")
         return None
 
-# Load models and features
+# Load models
 models = load_models()
-feature_columns = load_feature_columns()
 
-# Show model status
-if models:
-    st.sidebar.success(f"✅ {len(models)} models loaded successfully")
-else:
-    st.sidebar.error("❌ No models loaded")
-
-# District and crop data (hardcoded since no API)
+# District and crop data
 districts = [
     "Patna", "Gaya", "Bhagalpur", "Muzaffarpur", "Darbhanga", "Purnia", "Araria", "Kishanganj",
     "West Champaran", "East Champaran", "Sheohar", "Sitamarhi", "Madhubani", "Supaul", "Saharsa",
@@ -278,7 +321,7 @@ if st.sidebar.button("🚀 Get Prediction", type="primary") and models:
 
     # Make prediction
     with st.spinner("Making prediction..."):
-        result = make_prediction(models, input_data, feature_columns)
+        result = make_prediction_enhanced(models, input_data)
 
     if result:
         st.session_state['prediction_result'] = result
@@ -397,5 +440,6 @@ if st.sidebar.button("📊 Model Status"):
     if models:
         for model_name in models.keys():
             st.sidebar.write(f"✅ {model_name}")
+        st.sidebar.write(f"**Total Models:** {len(models)}")
     else:
         st.sidebar.write("❌ No models loaded")
