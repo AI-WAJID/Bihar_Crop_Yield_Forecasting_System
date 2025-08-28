@@ -27,7 +27,6 @@ COPY models/ ./models/
 COPY configs/ ./configs/
 COPY data/ ./data/
 COPY dashboard/ ./dashboard/
-COPY main_app.py .
 
 # Set environment variables
 ENV PYTHONPATH=/app
@@ -36,12 +35,12 @@ ENV MLFLOW_TRACKING_URI=sqlite:///mlflow.db
 # Create directories for MLflow
 RUN mkdir -p /app/mlruns
 
-# Expose port (Render will map this automatically)
+# Expose port
 EXPOSE 8000
 
-# Health check for API
+# Health check
 HEALTHCHECK --interval=30s --timeout=30s --start-period=15s --retries=3 \
-    CMD curl -f http://localhost:${PORT:-8000}/health || exit 1
+    CMD curl -f http://localhost:${PORT:-8000}/_stcore/health || exit 1
 
-# Run the combined application
-CMD uvicorn main_app:app --host 0.0.0.0 --port ${PORT:-8000}
+# Run Streamlit directly
+CMD streamlit run dashboard/dashboard_app.py --server.port=${PORT:-8000} --server.address=0.0.0.0 --server.headless=true --server.enableCORS=false --server.enableXsrfProtection=false
