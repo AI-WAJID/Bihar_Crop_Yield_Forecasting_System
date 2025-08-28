@@ -1,6 +1,6 @@
 """
 🌾 BIHAR CROP YIELD FORECASTING SYSTEM 🌾
-PREMIUM ENHANCED DASHBOARD BY WAJID RAZA
+PREMIUM ENHANCED DASHBOARD BY WAJID RAZA - THEME-COMPATIBLE VERSION
 Advanced Agricultural Intelligence Platform
 """
 
@@ -31,170 +31,189 @@ st.set_page_config(
     }
 )
 
-# Premium CSS styling
+# Theme-compatible CSS styling - works with both light and dark modes
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap');
+    /* Import modern fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
     
+    /* Main app styling */
+    .stApp {
+        font-family: 'Inter', sans-serif;
+    }
+    
+    /* Header styling - theme compatible */
     .main-header {
         background: linear-gradient(135deg, #2E8B57 0%, #228B22 50%, #32CD32 100%);
-        color: white;
+        color: white !important;
         padding: 3rem 2rem;
         border-radius: 20px;
         text-align: center;
         margin-bottom: 2rem;
         box-shadow: 0 10px 30px rgba(46, 139, 87, 0.4);
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .main-header::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="5" cy="5" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-        opacity: 0.3;
     }
     
     .main-title {
-        font-family: 'Roboto', sans-serif;
+        font-family: 'Inter', sans-serif;
         font-size: 4rem;
         font-weight: 900;
         margin: 0;
+        color: white !important;
         text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
-        position: relative;
-        z-index: 1;
     }
     
     .sub-title {
-        font-family: 'Roboto', sans-serif;
+        font-family: 'Inter', sans-serif;
         font-size: 1.4rem;
-        font-weight: 300;
+        font-weight: 400;
         margin-top: 1rem;
+        color: white !important;
         opacity: 0.95;
-        position: relative;
-        z-index: 1;
     }
     
+    /* Metric containers - theme compatible */
     .metric-container {
-        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        background: var(--background-color);
         padding: 2rem 1.5rem;
         border-radius: 20px;
-        border: 1px solid #e9ecef;
-        border-left: 6px solid #2E8B57;
+        border: 2px solid #2E8B57;
         margin: 1rem 0;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        box-shadow: 0 5px 20px rgba(46, 139, 87, 0.2);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
     
     .metric-container:hover {
         transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+        box-shadow: 0 10px 30px rgba(46, 139, 87, 0.3);
     }
     
+    /* Prediction card - theme compatible */
     .prediction-card {
-        background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
+        background: linear-gradient(135deg, rgba(46, 139, 87, 0.1) 0%, rgba(46, 139, 87, 0.05) 100%);
         padding: 3rem 2rem;
         border-radius: 25px;
         border: 3px solid #2E8B57;
         margin: 3rem 0;
-        box-shadow: 0 15px 40px rgba(46, 139, 87, 0.25);
+        box-shadow: 0 15px 40px rgba(46, 139, 87, 0.2);
         position: relative;
     }
     
-    .prediction-card::before {
-        content: '🎯';
-        position: absolute;
-        top: -10px;
-        right: 20px;
-        font-size: 2rem;
-        background: #2E8B57;
-        color: white;
-        padding: 10px;
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    .prediction-card h2 {
+        color: #2E8B57 !important;
+        margin-bottom: 2rem;
+        font-size: 2.5rem;
+        font-weight: 700;
     }
     
+    /* Model comparison card - theme compatible */
     .model-comparison-card {
-        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 193, 7, 0.05) 100%);
         padding: 2rem;
         border-radius: 20px;
-        border-left: 6px solid #ffc107;
+        border: 2px solid #ffc107;
         margin: 2rem 0;
-        box-shadow: 0 8px 25px rgba(255, 193, 7, 0.2);
+        box-shadow: 0 8px 25px rgba(255, 193, 7, 0.1);
     }
     
-    .stButton > button {
-        background: linear-gradient(135deg, #2E8B57 0%, #228B22 100%);
-        color: white;
-        border: none;
-        border-radius: 15px;
-        padding: 1rem 3rem;
-        font-weight: bold;
-        font-size: 1.1rem;
-        box-shadow: 0 6px 20px rgba(46, 139, 87, 0.3);
-        transition: all 0.3s ease;
-        text-transform: uppercase;
-        letter-spacing: 1px;
+    .model-comparison-card h4 {
+        color: #ffc107 !important;
+        margin-bottom: 1rem;
     }
     
-    .stButton > button:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 30px rgba(46, 139, 87, 0.4);
-        background: linear-gradient(135deg, #228B22 0%, #32CD32 100%);
-    }
-    
+    /* Feature highlight boxes - theme compatible */
     .feature-highlight {
-        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        background: linear-gradient(135deg, rgba(33, 150, 243, 0.1) 0%, rgba(33, 150, 243, 0.05) 100%);
         padding: 1.5rem;
         border-radius: 15px;
-        border-left: 5px solid #2196f3;
+        border: 2px solid #2196f3;
         margin: 1rem 0;
         box-shadow: 0 3px 15px rgba(33, 150, 243, 0.1);
     }
     
-    .author-signature {
-        text-align: center;
-        font-family: 'Roboto', sans-serif;
-        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-        padding: 3rem 2rem;
-        border-radius: 25px;
-        border: 2px solid #2E8B57;
-        margin: 3rem 0;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    .feature-highlight h4 {
+        color: #2196f3 !important;
+        margin-bottom: 0.5rem;
     }
     
+    /* Stats boxes */
     .stats-box {
-        background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+        background: linear-gradient(135deg, rgba(255, 152, 0, 0.1) 0%, rgba(255, 152, 0, 0.05) 100%);
         padding: 1.5rem;
         border-radius: 20px;
+        border: 2px solid #ff9800;
         text-align: center;
         margin: 1rem 0;
-        box-shadow: 0 5px 20px rgba(250, 177, 160, 0.2);
+        box-shadow: 0 5px 20px rgba(255, 152, 0, 0.1);
     }
     
-    .sidebar .sidebar-content {
-        background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+    .stats-box h3 {
+        color: #ff9800 !important;
+        margin-bottom: 0.5rem;
     }
     
+    /* Crop info boxes */
     .crop-info {
-        background: linear-gradient(135deg, #d1ecf1 0%, #b8daff 100%);
+        background: linear-gradient(135deg, rgba(23, 162, 184, 0.1) 0%, rgba(23, 162, 184, 0.05) 100%);
         padding: 1rem;
         border-radius: 10px;
-        border-left: 4px solid #17a2b8;
+        border: 2px solid #17a2b8;
         margin: 0.5rem 0;
+    }
+    
+    .crop-info strong {
+        color: #17a2b8 !important;
+    }
+    
+    /* Button styling - theme compatible */
+    .stButton > button {
+        background: linear-gradient(135deg, #2E8B57 0%, #228B22 100%) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 15px !important;
+        padding: 1rem 3rem !important;
+        font-weight: bold !important;
+        font-size: 1.1rem !important;
+        box-shadow: 0 6px 20px rgba(46, 139, 87, 0.3) !important;
+        transition: all 0.3s ease !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1px !important;
+    }
+    
+    .stButton > button:hover {
+        transform: translateY(-3px) !important;
+        box-shadow: 0 10px 30px rgba(46, 139, 87, 0.4) !important;
+        background: linear-gradient(135deg, #228B22 0%, #32CD32 100%) !important;
+    }
+    
+    /* Ensure text visibility in both themes */
+    [data-testid="stMarkdown"] p {
+        color: var(--text-color);
+    }
+    
+    /* Make sure headers are visible */
+    h1, h2, h3, h4, h5, h6 {
+        color: var(--text-color) !important;
+    }
+    
+    /* Special styling for success/error messages */
+    .success-message {
+        color: #2E8B57 !important;
+        font-weight: bold;
+    }
+    
+    .warning-message {
+        color: #ff9800 !important;
+        font-weight: bold;
+    }
+    
+    .error-message {
+        color: #f44336 !important;
+        font-weight: bold;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# Premium header
+# Clean, theme-compatible header using pure Streamlit
 st.markdown("""
 <div class="main-header">
     <h1 class="main-title">🌾 BIHAR CROP YIELD AI</h1>
@@ -338,7 +357,7 @@ def calculate_realistic_yield(raw_prediction, crop_type, environmental_factors):
     
     return realistic_yield
 
-# Premium model loading
+# Enhanced model loading with better error handling
 @st.cache_resource
 def load_models_premium():
     """Load models with enhanced error handling and logging"""
@@ -358,20 +377,21 @@ def load_models_premium():
             if os.path.exists(model_path):
                 with open(model_path, 'rb') as f:
                     models[model_name] = pickle.load(f)
-                st.sidebar.success(f"✅ **{model_name}** loaded")
+                st.sidebar.markdown(f'<p class="success-message">✅ <strong>{model_name}</strong> loaded</p>', unsafe_allow_html=True)
             else:
-                st.sidebar.warning(f"⚠️ {model_name} not found")
+                st.sidebar.markdown(f'<p class="warning-message">⚠️ {model_name} not found</p>', unsafe_allow_html=True)
         except Exception as e:
-            st.sidebar.error(f"❌ Error loading {model_name}: {str(e)[:50]}")
+            st.sidebar.markdown(f'<p class="error-message">❌ Error loading {model_name}: {str(e)[:50]}...</p>', unsafe_allow_html=True)
     
     return models
 
-# Premium prediction engine
+# Enhanced prediction engine with better error handling
 def make_premium_prediction(models, input_data):
     """Advanced prediction with multiple models and realistic scaling"""
     try:
         X = preprocess_input_premium(input_data)
         predictions = {}
+        failed_models = []
         
         # Environmental factors for realistic scaling
         environmental_factors = {
@@ -381,17 +401,25 @@ def make_premium_prediction(models, input_data):
                           (input_data['nitrogen_kg_per_hectare'] + input_data['phosphorus_kg_per_hectare'] + input_data['potassium_kg_per_hectare']) / 500
         }
         
-        # Get predictions from all models
+        # Get predictions from all models with better error handling
         for model_name, model in models.items():
             try:
                 raw_pred = model.predict(X)[0]
                 realistic_pred = calculate_realistic_yield(raw_pred, input_data['crop'], environmental_factors)
                 predictions[model_name] = realistic_pred
             except Exception as e:
-                st.warning(f"⚠️ Prediction failed for {model_name}: {str(e)[:50]}")
+                failed_models.append(f"{model_name}: {str(e)[:50]}...")
+                continue
         
         if not predictions:
+            st.error("🚨 All models failed to make predictions. Please check your input data.")
             return None
+        
+        # Show any model failures but continue with successful ones
+        if failed_models:
+            with st.expander("⚠️ Model Status Details", expanded=False):
+                for failure in failed_models:
+                    st.warning(f"⚠️ {failure}")
         
         # Calculate ensemble prediction
         pred_values = list(predictions.values())
@@ -446,7 +474,7 @@ crops_data = {
     'Jute': ['kharif']
 }
 
-# Enhanced sidebar
+# Enhanced sidebar with theme-compatible styling
 with st.sidebar:
     st.markdown("### 🎛️ **AI Control Panel**")
     
@@ -466,7 +494,7 @@ with st.sidebar:
     
     st.markdown("---")
     
-    # Input parameters
+    # Input parameters with better organization
     st.markdown("### 📍 **Agricultural Parameters**")
     
     # Location selection
@@ -477,7 +505,7 @@ with st.sidebar:
     selected_season = st.selectbox("**Growing Season**", available_seasons, index=0, help="Select the growing season")
     selected_year = st.slider("**Prediction Year**", 2024, 2030, 2025, help="Year for the prediction")
     
-    # Crop information
+    # Crop information with proper Streamlit markdown
     if selected_crop.lower() in CROP_YIELDS:
         crop_info = CROP_YIELDS[selected_crop.lower()]
         st.markdown(f"""
@@ -537,10 +565,10 @@ if predict_button and models:
 if 'prediction_result' in st.session_state:
     result = st.session_state['prediction_result']
     
-    # Hero prediction card
+    # Hero prediction card - using proper Streamlit components
     st.markdown("""
     <div class="prediction-card">
-        <h2 style="color: #2E8B57; margin-bottom: 2rem; font-size: 2.5rem;">🎯 AI Prediction Results</h2>
+        <h2>🎯 AI Prediction Results</h2>
     </div>
     """, unsafe_allow_html=True)
     
@@ -548,41 +576,33 @@ if 'prediction_result' in st.session_state:
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
-        st.markdown('<div class="metric-container">', unsafe_allow_html=True)
         st.metric(
             label="🌾 **Predicted Yield**",
             value=f"{result['predicted_yield']:.0f} kg/ha",
             delta=f"+{result['predicted_yield'] - result['confidence_interval'][0]:.0f} range",
             help=f"AI-predicted yield for {result['crop']} in {result['district']}"
         )
-        st.markdown('</div>', unsafe_allow_html=True)
     
     with col2:
-        st.markdown('<div class="metric-container">', unsafe_allow_html=True)
         st.metric(
             label="📊 **Lower Bound**",
             value=f"{result['confidence_interval'][0]:.0f} kg/ha",
             help="Minimum expected yield (95% confidence)"
         )
-        st.markdown('</div>', unsafe_allow_html=True)
     
     with col3:
-        st.markdown('<div class="metric-container">', unsafe_allow_html=True)
         st.metric(
             label="📈 **Upper Bound**",
             value=f"{result['confidence_interval'][1]:.0f} kg/ha",
             help="Maximum expected yield (95% confidence)"
         )
-        st.markdown('</div>', unsafe_allow_html=True)
     
     with col4:
-        st.markdown('<div class="metric-container">', unsafe_allow_html=True)
         st.metric(
             label="🎯 **Confidence**",
             value=f"{result.get('confidence_score', 95):.1f}%",
             help="AI model confidence in the prediction"
         )
-        st.markdown('</div>', unsafe_allow_html=True)
     
     # Model performance comparison
     if 'all_predictions' in result and len(result['all_predictions']) > 1:
@@ -765,39 +785,40 @@ if 'prediction_result' in st.session_state:
         </div>
         """, unsafe_allow_html=True)
 
-# Premium footer
+# Clean footer using pure Streamlit components (NO RAW HTML)
 st.markdown("---")
-st.markdown("""
-<div class="author-signature">
-    <h2 style="color: #2E8B57; margin-bottom: 1rem;">🌾 Bihar Crop Yield Forecasting System</h2>
-    <h3 style="color: #666;">🚀 Advanced Agricultural Intelligence Platform</h3>
-    
-    <div style="display: flex; justify-content: center; gap: 2rem; margin: 2rem 0; flex-wrap: wrap;">
-        <div style="text-align: center;">
-            <h4 style="color: #2E8B57;">🤖 AI Technology</h4>
-            <p>Multi-Model Ensemble<br>40+ Engineered Features<br>Real-Time Processing</p>
-        </div>
-        <div style="text-align: center;">
-            <h4 style="color: #2E8B57;">📊 Analytics</h4>
-            <p>Advanced Visualizations<br>Confidence Intervals<br>Risk Assessment</p>
-        </div>
-        <div style="text-align: center;">
-            <h4 style="color: #2E8B57;">🎯 Accuracy</h4>
-            <p>Realistic Predictions<br>Crop-Specific Scaling<br>Environmental Factors</p>
-        </div>
-    </div>
-    
-    <hr style="margin: 2rem 0; border: 1px solid #dee2e6;">
-    
-    <h3 style="color: #2E8B57; margin-bottom: 1rem;">👨‍💻 Engineered by Wajid Raza</h3>
-    <p style="font-size: 1.2rem; color: #666;">
-        🎯 <strong>AI Engineer</strong> • 🌐 <strong>Agricultural Technology Specialist</strong> • 📊 <strong>Data Scientist</strong>
-    </p>
-    <p style="color: #888; font-style: italic;">
-        "Bridging the gap between Artificial Intelligence and Agricultural Innovation"
-    </p>
-</div>
-""", unsafe_allow_html=True)
+
+# Professional footer section using Streamlit native components
+st.markdown("## 🌾 Bihar Crop Yield Forecasting System")
+st.markdown("### 🚀 Advanced Agricultural Intelligence Platform")
+
+# Technology showcase using columns
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.markdown("#### 🤖 AI Technology")
+    st.markdown("• Multi-Model Ensemble")
+    st.markdown("• 40+ Engineered Features") 
+    st.markdown("• Real-Time Processing")
+
+with col2:
+    st.markdown("#### 📊 Analytics")
+    st.markdown("• Advanced Visualizations")
+    st.markdown("• Confidence Intervals")
+    st.markdown("• Risk Assessment")
+
+with col3:
+    st.markdown("#### 🎯 Accuracy")
+    st.markdown("• Realistic Predictions")
+    st.markdown("• Crop-Specific Scaling")
+    st.markdown("• Environmental Factors")
+
+st.markdown("---")
+
+# Author information
+st.markdown("### 👨‍💻 Engineered by Wajid Raza")
+st.markdown("**🎯 AI Engineer • 🌐 Agricultural Technology Specialist • 📊 Data Scientist**")
+st.markdown("*\"Bridging the gap between Artificial Intelligence and Agricultural Innovation\"*")
 
 # Enhanced sidebar footer
 with st.sidebar:
@@ -819,9 +840,5 @@ with st.sidebar:
     """, unsafe_allow_html=True)
     
     st.markdown("---")
-    st.markdown("""
-    <div style="text-align: center; background: linear-gradient(135deg, #2E8B57, #228B22); color: white; padding: 1.5rem; border-radius: 15px; margin-top: 1rem;">
-        <h4>🚀 Built by Wajid Raza</h4>
-        <p style="margin: 0; opacity: 0.9;">AI • ML • Agricultural Technology</p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown("### 🚀 Built by Wajid Raza")
+    st.markdown("**AI • ML • Agricultural Technology**")
